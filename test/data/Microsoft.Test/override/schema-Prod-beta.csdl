@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:ags="http://aggregator.microsoft.com/internal" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+    <Schema Alias="self" Namespace="microsoft.test" xmlns="http://docs.oasis-open.org/odata/ns/edm" xmlns:ags="http://aggregator.microsoft.com/internal">
+      <ComplexType Name="identity" OpenType="true">
+        <Property Name="displayName" Type="Edm.String" />
+        <Property Name="id" Type="Edm.String" />
+      </ComplexType>
+
+      <ComplexType Name="identitySet" OpenType="true">
+        <Property Name="application" Type="self.identity" />
+        <Property Name="device" Type="self.identity" />
+        <Property Name="user" Type="self.identity" />
+      </ComplexType>
+
+      <EntityType Name="testItemRequest" ags:IsOwner="true" ags:IsHidden="true">
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="approver" Type="self.testIdentitySet" />
+        <Property Name="reassignedFrom" Type="self.testIdentitySet" />
+        <Property Name="isReassigned" Type="Edm.Boolean" />
+      </EntityType>
+
+      <EntityType Name="testItemResponse" ags:IsOwner="true" ags:IsHidden="true">
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="createdBy" Type="self.testIdentitySet"/>
+        <Property Name="comments" Type="Edm.String"/>
+        <Property Name="response" Type="Edm.String"/>
+        <Property Name="owners" Type="Collection(self.testIdentitySet)"/>
+      </EntityType>
+
+      <EntityType Name="testItem" ags:IsOwner="true" ags:IsHidden="true">
+        <Key>
+          <PropertyRef Name="id" />
+        </Key>
+        <Property Name="id" Type="Edm.String" Nullable="false" />
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="description" Type="Edm.String"/>
+      </EntityType>
+
+      <EntityType Name="testSolution" ags:IsOwner="true" ags:IsHidden="true">
+          <Property Name="provisioningStatus" Type="self.provisionState"/>
+          <NavigationProperty Name="testItems" Type="Collection(self.testItem)" ContainsTarget="true" />
+      </EntityType>
+
+      <EntityType Name="solutionsRoot" ags:IsOwner="false" ags:IsOwnerlessSingleton="true">
+          <NavigationProperty Name="test" Type="self.testSolution" ContainsTarget="true" ags:IsHidden="true" ags:AddressContainsEntitySetSegment="true" ags:AddressUrl="https://contoso.com/beta/solutions/test"/>
+      </EntityType>
+
+      <EntityContainer Name="testContainer" ags:OmitOperationNamespace="true">
+        <Singleton Name="solutions" Type="self.solutionsRoot"/>
+      </EntityContainer>
+
+      <Action Name="cancel" IsBound="true" ags:IsHidden="true" ags:OmitOperationNamespace="true">
+        <Parameter Name="bindingParameter" Type="self.testItem"/>
+      </Action>
+
+      <Action Name="provision" IsBound="true" ags:IsHidden="true" ags:OmitOperationNamespace="true">
+        <Parameter Name="bindingParameter" Type="self.testSolution" />
+      </Action>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

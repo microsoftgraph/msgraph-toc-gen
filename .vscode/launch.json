@@ -1,0 +1,103 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // Use IntelliSense to find out which attributes exist for C# debugging
+      // Use hover for the description of the existing attributes
+      // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md
+      "name": "V1 TOC Generation",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/src/bin/Debug/net8.0/GenerateTOC.dll",
+      "args": [
+        "--api-docs",
+        "C:/Source/Repos/microsoft-graph-docs/api-reference/v1.0/api",
+        "--resource-docs",
+        "C:/Source/Repos/microsoft-graph-docs/api-reference/v1.0/resources",
+        "--csdl",
+        "C:/Source/Repos/graph-workloads/Workloads",
+        "--mapping",
+        "C:/Source/Repos/microsoft-graph-docs/api-reference/v1.0/toc/toc.mapping.json",
+        "--terms-override",
+        "C:/Source/Repos/microsoft-graph-docs/api-reference/toc.terms.overrides.json",
+        "--toc",
+        "C:/Source/Repos/microsoft-graph-docs/api-reference/v1.0/toc.yml",
+        "--static-toc",
+        "C:/Source/Repos/microsoft-graph-docs/api-reference/v1.0/toc/static-toc.yml",
+        "--log-file",
+        "C:/Source/Repos/msgraph-toc-gen/v1.log"
+      ],
+      "cwd": "${workspaceFolder}/src",
+      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "stopAtEntry": false
+    },
+    {
+      // Use IntelliSense to find out which attributes exist for C# debugging
+      // Use hover for the description of the existing attributes
+      // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md
+      "name": "Beta TOC Generation",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/src/bin/Debug/net8.0/GenerateTOC.dll",
+      "args": [
+        "--api-docs",
+        "C:/Source/Repos/microsoft-graph-docs/api-reference/beta/api",
+        "--resource-docs",
+        "C:/Source/Repos/microsoft-graph-docs/api-reference/beta/resources",
+        "--csdl",
+        "C:/Source/Repos/graph-workloads/Workloads",
+        "--mapping",
+        "C:/Source/Repos/microsoft-graph-docs/api-reference/beta/toc/toc.mapping.json",
+        "--terms-override",
+        "C:/Source/Repos/microsoft-graph-docs/api-reference/toc.terms.overrides.json",
+        "--toc",
+        "C:/Source/Repos/microsoft-graph-docs/api-reference/beta/toc.yml",
+        "--static-toc",
+        "C:/Source/Repos/microsoft-graph-docs/api-reference/beta/toc/static-toc.yml",
+        "--log-file",
+        "C:/Source/Repos/msgraph-toc-gen/beta.log",
+        "--api-version",
+        "beta"
+      ],
+      "cwd": "${workspaceFolder}/src",
+      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "stopAtEntry": false
+    },
+    {
+      // Use IntelliSense to find out which attributes exist for C# debugging
+      // Use hover for the description of the existing attributes
+      // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md
+      "name": "Split TOC",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/tools/split-toc/bin/Debug/net8.0/SplitTOC.dll",
+      "args": [
+        "--toc",
+        "C:/Source/Repos/microsoft-graph-docs/api-reference/beta/toc.yml",
+        "--out",
+        "C:/Source/Repos/msgraph-toc-gen/compare",
+        "--update"
+      ],
+      "cwd": "${workspaceFolder}/src",
+      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "stopAtEntry": false
+    },
+    {
+      "name": ".NET Core Attach",
+      "type": "coreclr",
+      "request": "attach"
+    }
+  ]
+}
