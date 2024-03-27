@@ -139,16 +139,18 @@ public class StringExtensionsTests
     public void FilePathsConvertToTocRelative()
     {
         // Arrange
-        var fullPath = "C:/Source/Repos/microsoft-graph-docs/api-reference/v1.0/resources\\eventmessage.md";
-        var relativePath = "../api/eventmessage-get.md";
+        var fullPath = "C:/Source/Repos/microsoft-graph-docs/api-reference/v1.0/resources/event.md"
+            .Replace('/', Path.DirectorySeparatorChar);
+        var relativePath = "../api/event-get.md"
+            .Replace('/', Path.DirectorySeparatorChar);
 
         // Act
         var convertedFullPath = fullPath.ToTocRelativePath();
         var convertedRelativePath = relativePath.ToTocRelativePath();
 
         // Assert
-        Assert.Equal("../../resources/eventmessage.md", convertedFullPath);
-        Assert.Equal("../../api/eventmessage-get.md", convertedRelativePath);
+        Assert.Equal("../../resources/event.md", convertedFullPath);
+        Assert.Equal("../../api/event-get.md", convertedRelativePath);
     }
 
     [Fact]
