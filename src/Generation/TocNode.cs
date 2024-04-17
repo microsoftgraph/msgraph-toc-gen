@@ -21,7 +21,7 @@ public class TocNode
     /// <summary>
     /// Gets or sets the workloads within this node.
     /// </summary>
-    public List<TocWorkload>? Workloads { get; set; }
+    public List<string>? Resources { get; set; }
 
     /// <summary>
     /// Gets or sets the child nodes of this node.
