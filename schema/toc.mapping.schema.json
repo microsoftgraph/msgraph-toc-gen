@@ -120,28 +120,6 @@
           "overview"
         ]
       }
-    },
-    "termOverrides": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "term": {
-            "type": "string"
-          },
-          "override": {
-            "type": "string"
-          },
-          "caseSensitive": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "term",
-          "override"
-        ],
-        "additionalProperties": false
-      }
     }
   },
   "required": [
