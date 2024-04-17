@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/microsoftgraph/msgraph-toc-gen/schema/terms.overrides.schema.json",
+  "title": "Microsoft Graph TOC terms overrides schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "term": {
+        "type": "string",
+        "description": "The generated term to override"
+      },
+      "override": {
+        "type": "string",
+        "description": "The string to replace the overridden term with"
+      },
+      "caseSensitive": {
+        "type": "boolean",
+        "description": "Set to true if the term should be case sensitive"
+      }
+    },
+    "required": [
+      "term",
+      "override"
+    ],
+    "additionalProperties": false
+  }
+}
