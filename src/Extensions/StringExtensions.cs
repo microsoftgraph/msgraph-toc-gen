@@ -183,7 +183,7 @@ public static partial class StringExtensions
         if (value.Contains('.'))
         {
             return new Resource(
-                Path.GetExtension(value),
+                Path.GetExtension(value).TrimStart('.'),
                 Path.GetFileNameWithoutExtension(value),
                 string.Empty,
                 null,
