@@ -259,6 +259,15 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
             }
         }
 
+        foreach (var complexType in tocNode.ComplexTypes ?? [])
+        {
+            var complexTypeNode = BuildYamlTocNodeForResource(complexType, docSet, resourceOverviews);
+            if (complexTypeNode != null)
+            {
+                complexTypeNodes.Add(complexTypeNode);
+            }
+        }
+
         foreach (var childNode in tocNode.ChildNodes ?? [])
         {
             // Build the node for this child
