@@ -19,7 +19,7 @@
         "--csdl",
         "C:/Source/Repos/graph-workloads/Workloads",
         "--mapping",
-        "C:/Source/Repos/microsoft-graph-docs/api-reference/v1.0/toc/toc.mapping copy.json",
+        "C:/Source/Repos/microsoft-graph-docs/api-reference/v1.0/toc/toc.mapping.json",
         "--terms-override",
         "C:/Source/Repos/microsoft-graph-docs/api-reference/toc.terms.overrides.json",
         "--toc",
