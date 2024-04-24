@@ -36,7 +36,6 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
         Logger.LogInformation("Starting TOC generation with the following parameters:");
         Logger.LogInformation("  API docs folder: {folder}", Options.ApiDocsFolder);
         Logger.LogInformation("  Resource docs folder: {folder}", Options.ResourceDocsFolder);
-        Logger.LogInformation("  CSDL folder: {folder}", Options.CsdlFolder);
         Logger.LogInformation("  Mapping file: {file}", Options.MappingFile);
         Logger.LogInformation("  Terms override file: {file}", Options.TermsOverrideFile ?? "NONE");
         Logger.LogInformation("  Output TOC: {file}", Options.TocFile);
@@ -52,11 +51,6 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
 
         var termOverrides = await LoadTermOverridesFileAsync();
         StringExtensions.Initialize(termOverrides);
-
-        // Build a list of workloads and the resources they contain.
-        // var workloads = new WorkloadCollection(options.CsdlFolder, Logger);
-        // await workloads.ParseWorkloadsAsync(options.Version ?? "v1.0");
-        // Logger.LogInformation("Found {count} workloads.", workloads.Workloads.Count);
 
         // Build a list of resource docs and map to the known resources
         var docSet = await DocSet.CreateFromDirectory(Options.ResourceDocsFolder, Logger);
@@ -226,30 +220,6 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
         var unsortedNodes = new List<YamlTocNode>();
         var complexTypeNodes = new List<YamlTocNode>();
 
-        // foreach (var workload in tocNode.Workloads ?? [])
-        // {
-        //     // Build the set of nodes for this workload
-        //     var workloadNodes = BuildYamlTocNodesForTocWorkload(workload, workloads, docSet, resourceOverviews);
-        //
-        //     // Append those nodes
-        //     if (workloadNodes != null)
-        //     {
-        //         // Pull out any complex type node
-        //         var complexTypeNode = workloadNodes.SingleOrDefault(n => n.Name != null && n.Name.IsEqualIgnoringCase("Complex types"));
-        //         if (complexTypeNode != null)
-        //         {
-        //             if (complexTypeNode.Items != null)
-        //             {
-        //                 complexTypeNodes.AddRange(complexTypeNode.Items);
-        //             }
-        //
-        //             workloadNodes.Remove(complexTypeNode);
-        //         }
-        //
-        //         // yamlNode.Items.AddRange(workloadNodes);
-        //         unsortedNodes.AddRange(workloadNodes);
-        //     }
-        // }
         foreach (var resource in tocNode.Resources ?? [])
         {
             var resourceNode = BuildYamlTocNodeForResource(resource, docSet, resourceOverviews);
@@ -309,75 +279,6 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
         return yamlNode;
     }
 
-    // private List<YamlTocNode>? BuildYamlTocNodesForTocWorkload(
-    //     TocWorkload tocWorkload,
-    //     WorkloadCollection workloads,
-    //     DocSet docSet,
-    //     List<ResourceOverview>? resourceOverviews)
-    // {
-    //     List<Resource>? resourcesToAdd = null;
-    //     try
-    //     {
-    //         var workload = workloads.Workloads.Single(w => w.Id.IsEqualIgnoringCase(tocWorkload.Id ?? string.Empty));
-    //
-    //         // If included resources is non-null, we should only include those resources
-    //         resourcesToAdd = tocWorkload.IncludedResources == null ? workload.Resources.Where(r => !r.IsHidden).ToList() :
-    //             workload.Resources.Where(r => tocWorkload.IncludedResources.Exists(s => s.MatchesResource(r))).ToList();
-    //
-    //         // If excluded resources is non-null, we should remove those from the list
-    //         if (tocWorkload.ExcludedResources != null)
-    //         {
-    //             resourcesToAdd = resourcesToAdd.Where(r => !tocWorkload.ExcludedResources.Exists(s => s.MatchesResource(r))).ToList();
-    //         }
-    //
-    //         resourcesToAdd = SortResources(resourcesToAdd, tocWorkload.IncludedResources, tocWorkload.Id);
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Logger.LogError(
-    //             GenerationEventId.NoCsdl,
-    //             "Error looking up resources for {workload}: {msg}",
-    //             tocWorkload.Id,
-    //             ex.Message);
-    //     }
-    //
-    //     var complexTypeNodes = new List<YamlTocNode>();
-    //     if (resourcesToAdd?.Count > 0)
-    //     {
-    //         var yamlNodes = new List<YamlTocNode>();
-    //
-    //         foreach (var resource in resourcesToAdd)
-    //         {
-    //             var yamlNode = BuildYamlTocNodeForResource(resource, docSet, resourceOverviews);
-    //             if (yamlNode != null)
-    //             {
-    //                 if (yamlNode.Items == null &&
-    //                     (tocWorkload.IncludedResources == null ||
-    //                     !tocWorkload.IncludedResources.Exists(r => r.EndsWith(yamlNode.ResourceName ?? string.Empty))))
-    //                 {
-    //                     complexTypeNodes.Add(yamlNode);
-    //                 }
-    //                 else
-    //                 {
-    //                     yamlNodes.Add(yamlNode);
-    //                 }
-    //             }
-    //         }
-    //
-    //         if (complexTypeNodes.Count > 0)
-    //         {
-    //             yamlNodes.Add(new YamlTocNode
-    //             {
-    //                 Name = "Complex types",
-    //                 Items = complexTypeNodes,
-    //             });
-    //         }
-    //
-    //         return yamlNodes;
-    //     }
-    //
-    //     return null;
-    // }
     private YamlTocNode? BuildYamlTocNodeForResource(string resourceName, DocSet docSet, List<ResourceOverview>? resourceOverviews)
     {
         var resource = resourceName.ToResource();
