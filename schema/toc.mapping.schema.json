@@ -21,35 +21,11 @@
             "type": "string"
           }
         },
-        "workloads": {
-          "description": "The workloads within the TOC node",
+        "complexTypes": {
+          "description": "A list of complex types to document in this TOC node",
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "The workload identifier (ex. Microsoft.Exchange)",
-                "type": "string"
-              },
-              "includedResources": {
-                "description": "Resources in this workload to include in this TOC node",
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "excludedResources": {
-                "description": "Resources in this workload to exclude from this TOC node",
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            },
-            "required": [
-              "id"
-            ],
-            "additionalProperties": false
+            "type": "string"
           }
         },
         "childNodes": {
