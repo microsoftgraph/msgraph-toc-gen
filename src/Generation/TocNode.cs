@@ -19,9 +19,14 @@ public class TocNode
     public string? Overview { get; set; }
 
     /// <summary>
-    /// Gets or sets the workloads within this node.
+    /// Gets or sets the resources within this node.
     /// </summary>
-    public List<TocWorkload>? Workloads { get; set; }
+    public List<string>? Resources { get; set; }
+
+    /// <summary>
+    /// Gets or sets the complex types within this node.
+    /// </summary>
+    public List<string>? ComplexTypes { get; set; }
 
     /// <summary>
     /// Gets or sets the child nodes of this node.

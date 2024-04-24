@@ -173,6 +173,31 @@ public static partial class StringExtensions
             value.IsEqualIgnoringCase($"{resource.GraphNamespace}.{resource.Name}");
     }
 
+    /// <summary>
+    /// Create a <see cref="Resource"/> from a resource name string.
+    /// </summary>
+    /// <param name="value">A resource name string.</param>
+    /// <returns>A <see cref="Resource"/>.</returns>
+    public static Resource ToResource(this string value)
+    {
+        if (value.Contains('.'))
+        {
+            return new Resource(
+                Path.GetExtension(value).TrimStart('.'),
+                Path.GetFileNameWithoutExtension(value),
+                string.Empty,
+                null,
+                false);
+        }
+
+        return new Resource(
+            value,
+            "microsoft.graph",
+            string.Empty,
+            null,
+            false);
+    }
+
     private static string ApplyOverrides(string value)
     {
         if (termOverrides != null)
