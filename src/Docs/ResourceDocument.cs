@@ -1,13 +1,15 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System.Collections.Immutable;
 using GenerateTOC.Docs.Extensions;
 using GenerateTOC.Extensions;
 using Markdig;
 using Markdig.Extensions.Tables;
+using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Microsoft.Extensions.Logging;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace GenerateTOC.Docs;
 
@@ -19,6 +21,12 @@ public class ResourceDocument
     private static readonly MarkdownPipeline Pipeline = new MarkdownPipelineBuilder()
         .UseAdvancedExtensions()
         .UsePipeTables()
+        .UseYamlFrontMatter()
+        .Build();
+
+    private static readonly IDeserializer YamlDeserializer = new DeserializerBuilder()
+        .WithNamingConvention(CamelCaseNamingConvention.Instance)
+        .IgnoreUnmatchedProperties()
         .Build();
 
     /// <summary>
@@ -55,6 +63,11 @@ public class ResourceDocument
     /// Gets the TOC title override declared in the document's toc.title YAML value.
     /// </summary>
     public string? TocTitleOverride { get; private set; }
+
+    /// <summary>
+    /// Gets the keywords declared in the document's toc.keywords YAML value.
+    /// </summary>
+    public List<string>? Keywords { get; private set; }
 
     private MarkdownDocument? MarkdownDocument { get; set; }
 
@@ -108,9 +121,17 @@ public class ResourceDocument
         ResourceName = markdownContent.ExtractResourceName() ??
             throw new Exception($"Could not determine resource name from file");
         GraphNameSpace = markdownContent.ExtractNamespace();
-        TocTitleOverride = markdownContent.ExtractTocTitle();
 
         MarkdownDocument = Markdown.Parse(markdownContent, Pipeline);
+
+        var yamlBlock = MarkdownDocument.Descendants<YamlFrontMatterBlock>().FirstOrDefault();
+        if (yamlBlock != null)
+        {
+            var yaml = markdownContent.Substring(yamlBlock.Span.Start, yamlBlock.Span.Length).TrimEnd('-');
+            var docYamlBlock = YamlDeserializer.Deserialize<DocYamlBlock>(yaml);
+            TocTitleOverride = docYamlBlock.TocTitle;
+            Keywords = docYamlBlock.Keywords;
+        }
 
         // Find the "Methods" block
         var insideMethodsSection = false;

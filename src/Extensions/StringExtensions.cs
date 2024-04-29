@@ -76,22 +76,6 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Extracts the TOC title from the toc.title YAML value.
-    /// </summary>
-    /// <param name="markdown">The Markdown content to extract from.</param>
-    /// <returns>The TOC title, if present.</returns>
-    public static string? ExtractTocTitle(this string markdown)
-    {
-        var matches = TOCTitleFromYamlRegex().Matches(markdown);
-        if (matches.Count > 0)
-        {
-            return matches[0].Groups["title"].Value.Trim();
-        }
-
-        return null;
-    }
-
-    /// <summary>
     /// Compares the string against a provided value, ignoring case.
     /// </summary>
     /// <param name="value">The string to act on.</param>
@@ -219,9 +203,6 @@ public static partial class StringExtensions
 
     [GeneratedRegex("^title:\\s*[\"']?(?'resourceName'[a-zA-Z0-9_]+)\\s+((resource|complex)\\s+type|facet)", RegexOptions.Multiline)]
     private static partial Regex TitleFromYamlRegex();
-
-    [GeneratedRegex("^toc\\.title:\\s*([\"']?)(?'title'.*)\\1", RegexOptions.Multiline)]
-    private static partial Regex TOCTitleFromYamlRegex();
 
     [GeneratedRegex("^#\\s*(?'resourceName'[a-zA-Z0-9_]+)\\s+((resource|complex)\\s+type|facet)", RegexOptions.Multiline)]
     private static partial Regex TitleFromH1Regex();

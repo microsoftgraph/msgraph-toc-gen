@@ -19,11 +19,6 @@ public class GeneratorOptions
     public string ResourceDocsFolder { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the path to the folder that contains the workload CSDL folders.
-    /// </summary>
-    public string CsdlFolder { get; set; } = string.Empty;
-
-    /// <summary>
     /// Gets or sets the path to the mapping file.
     /// </summary>
     public string MappingFile { get; set; } = string.Empty;
@@ -56,7 +51,6 @@ public class GeneratorOptions
         var currentDirectory = Directory.GetCurrentDirectory();
         ApiDocsFolder = Path.Combine(currentDirectory, ApiDocsFolder);
         ResourceDocsFolder = Path.Combine(currentDirectory, ResourceDocsFolder);
-        CsdlFolder = Path.Combine(currentDirectory, CsdlFolder);
         MappingFile = Path.Combine(currentDirectory, MappingFile);
         TermsOverrideFile = string.IsNullOrEmpty(TermsOverrideFile) ? null : Path.Combine(currentDirectory, TermsOverrideFile);
         TocFile = Path.Combine(currentDirectory, TocFile);
