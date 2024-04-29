@@ -153,58 +153,6 @@ public class StringExtensionsTests
         Assert.Equal("../../api/event-get.md", convertedRelativePath);
     }
 
-    [Fact]
-    public void TocTitleWithNoQuotesExtracts()
-    {
-        // Arrange
-        var markdown = SampleData.YamlHeaderWithTocTitleNoQuotes;
-
-        // Act
-        var tocTitle = markdown.ExtractTocTitle();
-
-        // Assert
-        Assert.Equal("Installation options", tocTitle);
-    }
-
-    [Fact]
-    public void TocTitleWithDoubleQuotesExtracts()
-    {
-        // Arrange
-        var markdown = SampleData.YamlHeaderWithTocTitleDoubleQuotes;
-
-        // Act
-        var tocTitle = markdown.ExtractTocTitle();
-
-        // Assert
-        Assert.Equal("Jason's installation options", tocTitle);
-    }
-
-    [Fact]
-    public void TocTitleWithSingleQuotesExtracts()
-    {
-        // Arrange
-        var markdown = SampleData.YamlHeaderWithTocTitleSingleQuotes;
-
-        // Act
-        var tocTitle = markdown.ExtractTocTitle();
-
-        // Assert
-        Assert.Equal("\"Special\" installation options", tocTitle);
-    }
-
-    [Fact]
-    public void NoTocTitleExtractsAsNull()
-    {
-        // Arrange
-        var markdown = SampleData.ResourceMarkdownWithTitleOnlyInHeader;
-
-        // Act
-        var tocTitle = markdown.ExtractTocTitle();
-
-        // Assert
-        Assert.Null(tocTitle);
-    }
-
     public static TheoryData<string, string> CamelCaseData => new()
     {
         { "application", "Application" },

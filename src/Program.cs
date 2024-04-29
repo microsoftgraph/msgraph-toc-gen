@@ -17,12 +17,6 @@ var resourceDocsOption = new Option<string>(["--resource-docs", "-r"])
     IsRequired = true,
 };
 
-var csdlOption = new Option<string>(["--csdl", "-c"])
-{
-    Description = "The path to a folder containing the workload CSDL files",
-    IsRequired = true,
-};
-
 var mappingOption = new Option<string>(["--mapping", "-m"])
 {
     Description = "The path to the workload mapping JSON file",
@@ -62,7 +56,6 @@ var versionOption = new Option<string>(["--api-version"])
 var rootCommand = new RootCommand();
 rootCommand.AddOption(apiDocsOption);
 rootCommand.AddOption(resourceDocsOption);
-rootCommand.AddOption(csdlOption);
 rootCommand.AddOption(mappingOption);
 rootCommand.AddOption(termsOverrideOption);
 rootCommand.AddOption(tocOption);
@@ -78,8 +71,6 @@ rootCommand.SetHandler(async (context) =>
             throw new ArgumentException("The --api-docs option is required."),
         ResourceDocsFolder = context.ParseResult.GetValueForOption(resourceDocsOption) ??
             throw new ArgumentException("The --resource-docs option is required."),
-        CsdlFolder = context.ParseResult.GetValueForOption(csdlOption) ??
-            throw new ArgumentException("The --csdl option is required."),
         MappingFile = context.ParseResult.GetValueForOption(mappingOption) ??
             throw new ArgumentException("The --mapping option is required."),
         TermsOverrideFile = context.ParseResult.GetValueForOption(termsOverrideOption),

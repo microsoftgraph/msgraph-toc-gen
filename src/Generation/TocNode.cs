@@ -19,6 +19,11 @@ public class TocNode
     public string? Overview { get; set; }
 
     /// <summary>
+    /// Gets or sets the keywords for this node.
+    /// </summary>
+    public List<string>? Keywords { get; set; }
+
+    /// <summary>
     /// Gets or sets the resources within this node.
     /// </summary>
     public List<string>? Resources { get; set; }
