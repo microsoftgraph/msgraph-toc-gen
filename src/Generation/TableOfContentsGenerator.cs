@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using System.Text.Json;
-using GenerateTOC.CSDL;
 using GenerateTOC.Docs;
 using GenerateTOC.Extensions;
 using Microsoft.Extensions.Logging;
@@ -18,7 +17,7 @@ namespace GenerateTOC.Generation;
 /// <param name="logger">The logger for output.</param>
 public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
 {
-    private static JsonSerializerOptions jsonOptions = new()
+    private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
     };
@@ -94,7 +93,6 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
                 yamlNode.Href = $"toc/{directoryName}/toc.yml";
             }
 
-            // outputToc.Items.Add(yamlNode);
             nodesToAdd.Add(yamlNode);
         }
 
@@ -131,47 +129,6 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
         return tocNodes;
     }
 
-    private List<Resource>? SortResources(
-        List<Resource>? resources,
-        List<string>? includedResources,
-        string? workloadId)
-    {
-        if (resources == null)
-        {
-            return null;
-        }
-
-        if (includedResources == null)
-        {
-            // Default to alphabetically
-            resources.Sort();
-            return resources;
-        }
-        else
-        {
-            // Sort in the order of the includedResources
-            var sorted = new List<Resource>();
-            foreach (var resource in includedResources)
-            {
-                var match = resources.SingleOrDefault(resource.MatchesResource);
-                if (match == null)
-                {
-                    Logger.LogWarning(
-                        GenerationEventId.ResourceNotFound,
-                        "No resource named {resource} found in {workload}",
-                        resource,
-                        workloadId);
-                }
-                else
-                {
-                    sorted.Add(match);
-                }
-            }
-
-            return sorted;
-        }
-    }
-
     private async Task<YamlToc> InitializeYamlToc()
     {
         if (string.IsNullOrEmpty(Options.StaticTocFile))
@@ -206,6 +163,11 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
                 Name = "Overview",
                 Href = tocNode.Overview.ToTocRelativePath(),
             });
+        }
+
+        if (tocNode.Keywords != null && tocNode.Keywords.Count > 0)
+        {
+            yamlNode.DisplayName = string.Join(", ", tocNode.Keywords);
         }
 
         foreach (var link in tocNode.AdditionalLinks ?? [])
@@ -282,6 +244,7 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
     private YamlTocNode? BuildYamlTocNodeForResource(string resourceName, DocSet docSet, List<ResourceOverview>? resourceOverviews)
     {
         var resource = resourceName.ToResource();
+
         try
         {
             ResourceDocument? resourceDoc = null;
@@ -326,6 +289,7 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
                     Name = resourceTocNodeName,
                     ResourceName = resource.Name,
                     Href = resourceDoc.FilePath.ToTocRelativePath(),
+                    DisplayName = resourceDoc.Keywords != null ? string.Join(", ", resourceDoc.Keywords) : null,
                 };
             }
 
@@ -333,6 +297,7 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
             {
                 Name = resourceTocNodeName,
                 ResourceName = resource.Name,
+                DisplayName = resourceDoc.Keywords != null ? string.Join(", ", resourceDoc.Keywords) : null,
                 Items =
                 [
                     new YamlTocNode
@@ -405,7 +370,7 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
         try
         {
             var mappingJson = await File.ReadAllTextAsync(Options.MappingFile);
-            return JsonSerializer.Deserialize<TocMapping>(mappingJson, jsonOptions);
+            return JsonSerializer.Deserialize<TocMapping>(mappingJson, JsonOptions);
         }
         catch (Exception ex)
         {
@@ -436,7 +401,7 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
         try
         {
             var termsOverrideJson = await File.ReadAllTextAsync(Options.TermsOverrideFile);
-            return JsonSerializer.Deserialize<List<TocTermOverride>>(termsOverrideJson, jsonOptions);
+            return JsonSerializer.Deserialize<List<TocTermOverride>>(termsOverrideJson, JsonOptions);
         }
         catch (Exception ex)
         {
