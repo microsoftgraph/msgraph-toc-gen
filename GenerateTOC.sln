@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{CA43BD48
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplitTOC", "tools\split-toc\SplitTOC.csproj", "{0DE92D59-DE8F-4C32-89EB-B132C1D2C1CD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TOCScan", "tools\toc-scan\TOCScan.csproj", "{226A92FC-16C0-4A33-ABFC-28DF34FE5F43}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,8 +34,13 @@ Global
 		{0DE92D59-DE8F-4C32-89EB-B132C1D2C1CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DE92D59-DE8F-4C32-89EB-B132C1D2C1CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DE92D59-DE8F-4C32-89EB-B132C1D2C1CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{226A92FC-16C0-4A33-ABFC-28DF34FE5F43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{226A92FC-16C0-4A33-ABFC-28DF34FE5F43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{226A92FC-16C0-4A33-ABFC-28DF34FE5F43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{226A92FC-16C0-4A33-ABFC-28DF34FE5F43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0DE92D59-DE8F-4C32-89EB-B132C1D2C1CD} = {CA43BD48-F202-44AC-AEA0-26635DA98EC0}
+		{226A92FC-16C0-4A33-ABFC-28DF34FE5F43} = {CA43BD48-F202-44AC-AEA0-26635DA98EC0}
 	EndGlobalSection
 EndGlobal
