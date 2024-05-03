@@ -60,6 +60,10 @@
         "shouldSort": {
           "description": "Indicates whether the sub-nodes of this node should be sorted alphabetically.",
           "type": "boolean"
+        },
+        "file": {
+          "description": "A path to a JSON file that describes this TOC node.",
+          "type": "string"
         }
       },
       "anyOf": [
@@ -79,6 +83,11 @@
           "required": [
             "name",
             "additionalLinks"
+          ]
+        },
+        {
+          "required": [
+            "file"
           ]
         }
       ],

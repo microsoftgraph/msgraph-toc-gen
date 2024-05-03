@@ -149,6 +149,8 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
         DocSet docSet,
         List<ResourceOverview>? resourceOverviews)
     {
+        tocNode = tocNode.LoadIfNeeded(Options.MappingFile) ?? tocNode;
+
         // Create a top-level node
         var yamlNode = new YamlTocNode
         {
@@ -270,8 +272,12 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
                     fileNames);
 
                 // Fall back on trying to find a file with the resource name
-                resourceDoc = potentialMatches.Single(
+                resourceDoc = potentialMatches.SingleOrDefault(
                     rd => Path.GetFileNameWithoutExtension(rd.FilePath).IsEqualIgnoringCase(resource.Name));
+
+                // If that didn't work, it may be an Intune "shared" resource.
+                resourceDoc ??= potentialMatches.SingleOrDefault(
+                        rd => Path.GetFileName(rd.FilePath).StartsWith("intune-shared"));
             }
 
             _ = resourceDoc ?? throw new Exception("No matches found");
