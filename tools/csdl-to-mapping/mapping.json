@@ -1,0 +1,33 @@
+{
+  "resources": [
+    "deviceAppManagement",
+    "vppToken",
+    "deviceManagementExchangeConnector",
+    "deviceEnrollmentConfiguration",
+    "enrollmentConfigurationAssignment",
+    "deviceManagementPartner",
+    "deviceEnrollmentLimitConfiguration",
+    "deviceEnrollmentPlatformRestrictionsConfiguration",
+    "windows10EnrollmentCompletionPageConfiguration",
+    "deviceEnrollmentWindowsHelloForBusinessConfiguration",
+    "deviceCategory",
+    "onPremisesConditionalAccessSettings",
+    "mobileThreatDefenseConnector",
+    "complianceManagementPartner"
+  ],
+  "complexTypes": [
+    "deviceAndAppManagementData",
+    "intuneBrand",
+    "rgbColor",
+    "mimeContent",
+    "deviceAndAppManagementAssignmentTarget",
+    "configurationManagerCollectionAssignmentTarget",
+    "allDevicesAssignmentTarget",
+    "groupAssignmentTarget",
+    "exclusionGroupAssignmentTarget",
+    "allLicensedUsersAssignmentTarget",
+    "deviceEnrollmentPlatformRestriction",
+    "deviceManagementPartnerAssignment",
+    "complianceManagementPartnerAssignment"
+  ]
+}

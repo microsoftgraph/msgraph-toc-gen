@@ -16,7 +16,7 @@ public static class OutputLoggerFactory
     /// <typeparam name="T">The type to use to create the <see cref="ILogger"/>.</typeparam>
     /// <param name="logFile">The path to the log file.</param>
     /// <returns>The <see cref="ILogger"/> that was created.</returns>
-    public static ILogger GetLogger<T>(string? logFile)
+    public static ILogger GetLogger<T>(string? logFile = null)
     {
         DeleteFileIfExists(logFile);
 

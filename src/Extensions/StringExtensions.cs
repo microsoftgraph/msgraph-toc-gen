@@ -171,6 +171,7 @@ public static partial class StringExtensions
                 Path.GetFileNameWithoutExtension(value),
                 string.Empty,
                 null,
+                false,
                 false);
         }
 
@@ -179,6 +180,7 @@ public static partial class StringExtensions
             "microsoft.graph",
             string.Empty,
             null,
+            false,
             false);
     }
 

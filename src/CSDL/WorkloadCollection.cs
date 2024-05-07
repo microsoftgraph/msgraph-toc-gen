@@ -42,6 +42,61 @@ public class WorkloadCollection(string csdlFolder, ILogger logger)
     private ILogger Logger => logger;
 
     /// <summary>
+    /// Gets resources from a namespace.
+    /// </summary>
+    /// <param name="namespaceElement">The <see cref="XElement"/> that represents the namespace.</param>
+    /// <param name="workload">The workload ID.</param>
+    /// <returns>A list of resources.</returns>
+    public static List<Resource>? GetResourcesFromNamespace(XElement? namespaceElement, string workload)
+    {
+        if (namespaceElement == null)
+        {
+            return null;
+        }
+
+        var graphNamespace = namespaceElement.GetAttribute("Namespace") ?? "microsoft.graph";
+        if (!graphNamespace.StartsWith("microsoft.graph.", StringComparison.InvariantCultureIgnoreCase) ||
+            graphNamespace.IsEqualIgnoringCase("microsoft.graph.analytics"))
+        {
+            graphNamespace = "microsoft.graph";
+        }
+
+        // Get all EntityType elements in this namespace
+        var entityTypes = namespaceElement.GetElements("EntityType");
+        var complexTypes = namespaceElement.GetElements("ComplexType");
+
+        if ((entityTypes == null || !entityTypes.Any()) &&
+            (complexTypes == null || !complexTypes.Any()))
+        {
+            return null;
+        }
+
+        var resources = new List<Resource>();
+        foreach (var entityType in entityTypes ?? [])
+        {
+            if (entityType.BelongsInWorkload())
+            {
+                var resource = Resource.CreateFromXElement(entityType, graphNamespace, workload);
+                if (resource != null)
+                {
+                    resources.Add(resource);
+                }
+            }
+        }
+
+        foreach (var complexType in complexTypes ?? [])
+        {
+            var resource = Resource.CreateFromXElement(complexType, graphNamespace, workload);
+            if (resource != null)
+            {
+                resources.Add(resource);
+            }
+        }
+
+        return resources;
+    }
+
+    /// <summary>
     /// Loads workload data from the CSDLs in the workload folder.
     /// </summary>
     /// <param name="version">The API version to load.</param>
@@ -97,54 +152,5 @@ public class WorkloadCollection(string csdlFolder, ILogger logger)
         }
 
         return workload;
-    }
-
-    private List<Resource>? GetResourcesFromNamespace(XElement? namespaceElement, string workload)
-    {
-        if (namespaceElement == null)
-        {
-            return null;
-        }
-
-        var graphNamespace = namespaceElement.GetAttribute("Namespace") ?? "microsoft.graph";
-        if (!graphNamespace.StartsWith("microsoft.graph.", StringComparison.InvariantCultureIgnoreCase) ||
-            graphNamespace.IsEqualIgnoringCase("microsoft.graph.analytics"))
-        {
-            graphNamespace = "microsoft.graph";
-        }
-
-        // Get all EntityType elements in this namespace
-        var entityTypes = namespaceElement.GetElements("EntityType");
-        var complexTypes = namespaceElement.GetElements("ComplexType");
-
-        if ((entityTypes == null || !entityTypes.Any()) &&
-            (complexTypes == null || !complexTypes.Any()))
-        {
-            return null;
-        }
-
-        var resources = new List<Resource>();
-        foreach (var entityType in entityTypes ?? [])
-        {
-            if (entityType.BelongsInWorkload())
-            {
-                var resource = Resource.CreateFromXElement(entityType, graphNamespace, workload);
-                if (resource != null)
-                {
-                    resources.Add(resource);
-                }
-            }
-        }
-
-        foreach (var complexType in complexTypes ?? [])
-        {
-            var resource = Resource.CreateFromXElement(complexType, graphNamespace, workload);
-            if (resource != null)
-            {
-                resources.Add(resource);
-            }
-        }
-
-        return resources;
     }
 }
