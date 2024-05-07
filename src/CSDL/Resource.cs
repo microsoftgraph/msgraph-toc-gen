@@ -14,7 +14,14 @@ namespace GenerateTOC.CSDL;
 /// <param name="workload">The workload the resource belongs to.</param>
 /// <param name="baseType">The base type of the resource.</param>
 /// <param name="isHidden">A value indicating whether the resource is hidden in the CSDL.</param>
-public class Resource(string name, string graphNamespace, string workload, string? baseType, bool isHidden) : IComparable<Resource>
+/// <param name="isComplexType">A value indicating whether the resource is a complex type.</param>
+public class Resource(
+    string name,
+    string graphNamespace,
+    string workload,
+    string? baseType,
+    bool isHidden,
+    bool isComplexType) : IComparable<Resource>
 {
     /// <summary>
     /// Gets the name of the resource.
@@ -42,6 +49,11 @@ public class Resource(string name, string graphNamespace, string workload, strin
     public bool IsHidden { get; private set; } = isHidden;
 
     /// <summary>
+    /// Gets a value indicating whether the resource is a complex type.
+    /// </summary>
+    public bool IsComplexType { get; private set; } = isComplexType;
+
+    /// <summary>
     /// Creates an instance of <see cref="Resource"/> from an <see cref="XElement"/>.
     /// </summary>
     /// <param name="element">The XML element to create from.</param>
@@ -61,7 +73,8 @@ public class Resource(string name, string graphNamespace, string workload, strin
                 graphNamespace,
                 workload,
                 element.GetAttribute("BaseType"),
-                isHidden);
+                isHidden,
+                element?.Name.LocalName.IsEqualIgnoringCase("ComplexType") ?? false);
         }
 
         return null;
