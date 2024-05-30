@@ -108,6 +108,14 @@ public static partial class StringExtensions
     {
         try
         {
+            // If there is no file extension, this is a relative URL,
+            // not a file path. Return the value unchanged.
+            var fileExtension = Path.GetExtension(value);
+            if (string.IsNullOrEmpty(fileExtension))
+            {
+                return value;
+            }
+
             var folderName = Directory.GetParent(value)?.Name;
             var fileName = Path.GetFileName(value);
             return string.IsNullOrEmpty(folderName) || string.IsNullOrEmpty(fileName) ?
