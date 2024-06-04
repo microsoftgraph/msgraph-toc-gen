@@ -22,6 +22,9 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
     };
 
+    private static readonly string DoNotEditComment =
+        $"#{Environment.NewLine}# GENERATED FILE - DO NOT EDIT{Environment.NewLine}#{Environment.NewLine}";
+
     private GeneratorOptions Options => options;
 
     private ILogger Logger => logger;
@@ -86,7 +89,7 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
                 Directory.CreateDirectory(subDirectory);
                 var subTocFileName = Path.Combine(subDirectory, "toc.yml");
 
-                var subTocYaml = tocSerializer.Serialize(outToc);
+                var subTocYaml = DoNotEditComment + tocSerializer.Serialize(outToc);
                 await File.WriteAllTextAsync(subTocFileName, subTocYaml);
 
                 yamlNode.Items = null;
@@ -108,7 +111,7 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
         }
 
         // Write toc.yml
-        var tocYaml = tocSerializer.Serialize(outputToc);
+        var tocYaml = DoNotEditComment + tocSerializer.Serialize(outputToc);
         await File.WriteAllTextAsync(Options.TocFile, tocYaml);
         Logger.LogInformation("TOC generation complete.");
     }
