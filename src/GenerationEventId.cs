@@ -11,7 +11,7 @@ namespace GenerateTOC;
 public static class GenerationEventId
 {
     /// <summary>
-    /// A workload ID had not matching CSDL file.
+    /// A workload ID had no matching CSDL file.
     /// </summary>
     public static readonly EventId NoCsdl = 1;
 
@@ -21,7 +21,7 @@ public static class GenerationEventId
     public static readonly EventId NoDocument = 2;
 
     /// <summary>
-    /// The mapping file provided was not valid.
+    /// The mapping file provided is not valid.
     /// </summary>
     public static readonly EventId InvalidMappingFile = 3;
 
@@ -36,12 +36,17 @@ public static class GenerationEventId
     public static readonly EventId MultipleDocsFound = 5;
 
     /// <summary>
-    /// Resource was not found in specified workload.
+    /// Resource is not found in specified workload.
     /// </summary>
     public static readonly EventId ResourceNotFound = 6;
 
     /// <summary>
-    /// The doc_type YAML value for the document was the wrong type.
+    /// The doc_type YAML value for the document is the wrong type.
     /// </summary>
     public static readonly EventId WrongDocType = 7;
+
+    /// <summary>
+    /// The file path for a method link in a resource document is invalid.
+    /// </summary>
+    public static readonly EventId InvalidMethodLink = 8;
 }

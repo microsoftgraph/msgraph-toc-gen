@@ -192,6 +192,38 @@ public static partial class StringExtensions
             false);
     }
 
+    /// <summary>
+    /// Resolves a relative path against a file path and returns the full resulting path.
+    /// </summary>
+    /// <param name="value">A relative path.</param>
+    /// <param name="file">The path to a file to resolve the relative path against.</param>
+    /// <returns>A full path.</returns>
+    public static string FullPathRelativeToFile(this string value, string file)
+    {
+        // if (value.Contains('#'))
+        // {
+
+        // }
+        var parentDirectory = Path.GetDirectoryName(file) ?? string.Empty;
+        var fullPath = Path.GetFullPath(Path.Combine(parentDirectory, value));
+        return fullPath;
+    }
+
+    /// <summary>
+    /// Removes any anchor from a URL or file path.
+    /// </summary>
+    /// <param name="value">The URL or file path to trim.</param>
+    /// <returns>The URL or file path with the anchor removed.</returns>
+    public static string TrimAnchor(this string value)
+    {
+        if (value.Contains('#'))
+        {
+            return value.Split('#')[0];
+        }
+
+        return value;
+    }
+
     private static string ApplyOverrides(string value)
     {
         if (termOverrides != null)
