@@ -194,10 +194,10 @@ public class StringExtensionsTests
     public void RelativePathResolvesCorrectly()
     {
         // Arrange
-        var slash = Path.DirectorySeparatorChar;
-        var resourceDocFile = $"C:{slash}docs{slash}resources{slash}resource.md";
+        var workingDirectory = Directory.GetCurrentDirectory();
+        var resourceDocFile = Path.Combine(workingDirectory, "docs", "resources", "resource.md");
         var methodLinkPath = "../api/resource-get.md";
-        var expectedFullPath = $"C:{slash}docs{slash}api{slash}resource-get.md";
+        var expectedFullPath = Path.Combine(workingDirectory, "docs", "api", "resource-get.md");
 
         // Act
         var fullPath = methodLinkPath.FullPathRelativeToFile(resourceDocFile);
