@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using GenerateTOC.Extensions;
+
 namespace GenerateTOC.Docs;
 
 /// <summary>
@@ -25,4 +27,29 @@ public class MethodLink(string title, string filePath, string? heading = null)
     /// Gets the subheading this method link was found under, if any.
     /// </summary>
     public string? Heading => heading;
+
+    /// <summary>
+    /// Checks if the file path is valid.
+    /// </summary>
+    /// <param name="resourceDocumentFilePath">The path to the resource document that contains this link.</param>
+    /// <returns>A value indicating if the link is valid.</returns>
+    public bool IsValid(string resourceDocumentFilePath)
+    {
+        // Is this a file path?
+        var fileExtension = Path.GetExtension(FilePath.TrimAnchor());
+        if (string.IsNullOrEmpty(fileExtension))
+        {
+            // Assume this is link outside of the docset
+            // (relative URL) and treat it as valid.
+            return true;
+        }
+
+        // File extension should be either .md or .yml
+        if (fileExtension.IsEqualIgnoringCase(".md") || fileExtension.IsEqualIgnoringCase(".yml"))
+        {
+            return File.Exists(FilePath.TrimAnchor().FullPathRelativeToFile(resourceDocumentFilePath));
+        }
+
+        return false;
+    }
 }

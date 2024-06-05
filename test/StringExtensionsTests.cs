@@ -189,4 +189,36 @@ public class StringExtensionsTests
         // Assert
         Assert.Equal(expectedSentenceCase, sentenceCase);
     }
+
+    [Fact]
+    public void RelativePathResolvesCorrectly()
+    {
+        // Arrange
+        var slash = Path.DirectorySeparatorChar;
+        var resourceDocFile = $"C:{slash}docs{slash}resources{slash}resource.md";
+        var methodLinkPath = "../api/resource-get.md";
+        var expectedFullPath = $"C:{slash}docs{slash}api{slash}resource-get.md";
+
+        // Act
+        var fullPath = methodLinkPath.FullPathRelativeToFile(resourceDocFile);
+
+        // Assert
+        Assert.Equal(expectedFullPath, fullPath);
+    }
+
+    [Fact]
+    public void PathWithAnchorTrimsCorrectly()
+    {
+        // Arrange
+        var filePathWithAnchor = "../api/resource-get.md#some-anchor";
+        var urlWithAnchor = "/graph/overview#some-anchor";
+
+        // Act
+        var trimmedFilePath = filePathWithAnchor.TrimAnchor();
+        var trimmedUrl = urlWithAnchor.TrimAnchor();
+
+        // Assert
+        Assert.Equal("../api/resource-get.md", trimmedFilePath);
+        Assert.Equal("/graph/overview", trimmedUrl);
+    }
 }
