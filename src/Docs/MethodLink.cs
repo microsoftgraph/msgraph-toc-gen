@@ -36,7 +36,9 @@ public class MethodLink(string title, string filePath, string? heading = null)
     public bool IsValid(string resourceDocumentFilePath)
     {
         // Is this a file path?
-        var fileExtension = Path.GetExtension(FilePath.TrimAnchor());
+
+        var filePath = FilePath.NormalizeFilePath().TrimAnchor();
+        var fileExtension = Path.GetExtension(filePath);
         if (string.IsNullOrEmpty(fileExtension))
         {
             // Assume this is link outside of the docset
@@ -47,7 +49,7 @@ public class MethodLink(string title, string filePath, string? heading = null)
         // File extension should be either .md or .yml
         if (fileExtension.IsEqualIgnoringCase(".md") || fileExtension.IsEqualIgnoringCase(".yml"))
         {
-            return File.Exists(FilePath.TrimAnchor().FullPathRelativeToFile(resourceDocumentFilePath));
+            return File.Exists(filePath.FullPathRelativeToFile(resourceDocumentFilePath));
         }
 
         return false;

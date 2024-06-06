@@ -224,6 +224,18 @@ public static partial class StringExtensions
         return value;
     }
 
+    /// <summary>
+    /// Normalizes the directory separator character to the current OS's standard.
+    /// </summary>
+    /// <param name="value">The file path to normalize.</param>
+    /// <returns>The normalized file path.</returns>
+    public static string NormalizeFilePath(this string value)
+    {
+        return value
+            .Replace('\\', Path.DirectorySeparatorChar)
+            .Replace('/', Path.DirectorySeparatorChar);
+    }
+
     private static string ApplyOverrides(string value)
     {
         if (termOverrides != null)

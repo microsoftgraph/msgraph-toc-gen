@@ -221,4 +221,21 @@ public class StringExtensionsTests
         Assert.Equal("../api/resource-get.md", trimmedFilePath);
         Assert.Equal("/graph/overview", trimmedUrl);
     }
+
+    [Fact]
+    public void PathNormalizesCorrectly()
+    {
+        // Arrange
+        var windowsStylePath = "..\\api\\resource-get.md";
+        var unixStylePath = "../api/resource-get.md";
+        var expectedNormalizedPath = $"..{Path.DirectorySeparatorChar}api{Path.DirectorySeparatorChar}resource-get.md";
+
+        // Act
+        var normalizedWindowsPath = windowsStylePath.NormalizeFilePath();
+        var normalizedUnixPath = unixStylePath.NormalizeFilePath();
+
+        // Assert
+        Assert.Equal(expectedNormalizedPath, normalizedWindowsPath);
+        Assert.Equal(expectedNormalizedPath, normalizedUnixPath);
+    }
 }
