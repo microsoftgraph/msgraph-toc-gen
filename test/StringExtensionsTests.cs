@@ -189,4 +189,53 @@ public class StringExtensionsTests
         // Assert
         Assert.Equal(expectedSentenceCase, sentenceCase);
     }
+
+    [Fact]
+    public void RelativePathResolvesCorrectly()
+    {
+        // Arrange
+        var workingDirectory = Directory.GetCurrentDirectory();
+        var resourceDocFile = Path.Combine(workingDirectory, "docs", "resources", "resource.md");
+        var methodLinkPath = "../api/resource-get.md";
+        var expectedFullPath = Path.Combine(workingDirectory, "docs", "api", "resource-get.md");
+
+        // Act
+        var fullPath = methodLinkPath.FullPathRelativeToFile(resourceDocFile);
+
+        // Assert
+        Assert.Equal(expectedFullPath, fullPath);
+    }
+
+    [Fact]
+    public void PathWithAnchorTrimsCorrectly()
+    {
+        // Arrange
+        var filePathWithAnchor = "../api/resource-get.md#some-anchor";
+        var urlWithAnchor = "/graph/overview#some-anchor";
+
+        // Act
+        var trimmedFilePath = filePathWithAnchor.TrimAnchor();
+        var trimmedUrl = urlWithAnchor.TrimAnchor();
+
+        // Assert
+        Assert.Equal("../api/resource-get.md", trimmedFilePath);
+        Assert.Equal("/graph/overview", trimmedUrl);
+    }
+
+    [Fact]
+    public void PathNormalizesCorrectly()
+    {
+        // Arrange
+        var windowsStylePath = "..\\api\\resource-get.md";
+        var unixStylePath = "../api/resource-get.md";
+        var expectedNormalizedPath = $"..{Path.DirectorySeparatorChar}api{Path.DirectorySeparatorChar}resource-get.md";
+
+        // Act
+        var normalizedWindowsPath = windowsStylePath.NormalizeFilePath();
+        var normalizedUnixPath = unixStylePath.NormalizeFilePath();
+
+        // Assert
+        Assert.Equal(expectedNormalizedPath, normalizedWindowsPath);
+        Assert.Equal(expectedNormalizedPath, normalizedUnixPath);
+    }
 }
