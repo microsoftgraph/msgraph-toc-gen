@@ -116,17 +116,30 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
         Logger.LogInformation("TOC generation complete.");
     }
 
-    private static List<YamlTocNode> MethodLinksToYamlTocNodes(IEnumerable<MethodLink> methods)
+    private List<YamlTocNode> MethodLinksToYamlTocNodes(
+        IEnumerable<MethodLink> methods,
+        string filePath)
     {
         var tocNodes = new List<YamlTocNode>();
 
         foreach (var method in methods)
         {
-            tocNodes.Add(new YamlTocNode
+            if (method.IsValid(filePath))
             {
-                Name = method.Title,
-                Href = method.FilePath.ToTocRelativePath(),
-            });
+                tocNodes.Add(new YamlTocNode
+                {
+                    Name = method.Title,
+                    Href = method.FilePath.ToTocRelativePath(),
+                });
+            }
+            else
+            {
+                Logger.LogWarning(
+                    GenerationEventId.InvalidMethodLink,
+                    "Invalid link to {link} found in {file}",
+                    method.FilePath,
+                    Path.GetFileName(filePath));
+            }
         }
 
         return tocNodes;
@@ -288,7 +301,7 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
             var resourceTocNodeName = resourceDoc.TocTitleOverride ?? resource.Name.SplitCamelCaseToSentenceCase();
             var overview = resourceOverviews?.SingleOrDefault(o => o.Resource != null && o.Resource.IsEqualIgnoringCase(resource.Name));
 
-            // If the resource has not methods and no overview,
+            // If the resource has no methods and no overview,
             // it doesn't need to be an expandable node, just return
             // a flat node with a link to the resource.
             if (resourceDoc.Methods.Count == 0 && overview == null)
@@ -330,7 +343,7 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
             foreach (var heading in headings)
             {
                 var methods = resourceDoc.Methods.Where(m => m.Heading == heading);
-                var methodNodes = MethodLinksToYamlTocNodes(methods);
+                var methodNodes = MethodLinksToYamlTocNodes(methods, resourceDoc.FilePath);
 
                 if (string.IsNullOrEmpty(heading))
                 {
