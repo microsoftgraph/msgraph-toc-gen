@@ -111,7 +111,8 @@ public static partial class StringExtensions
             // If there is no file extension, this is a relative URL,
             // not a file path. Return the value unchanged.
             var fileExtension = Path.GetExtension(value);
-            if (string.IsNullOrEmpty(fileExtension))
+            if (string.IsNullOrEmpty(fileExtension) ||
+                (!fileExtension.TrimAnchor().IsEqualIgnoringCase(".md") && !fileExtension.TrimAnchor().IsEqualIgnoringCase(".yml")))
             {
                 return value;
             }

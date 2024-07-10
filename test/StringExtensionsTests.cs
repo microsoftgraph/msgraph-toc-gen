@@ -143,14 +143,34 @@ public class StringExtensionsTests
             .Replace('/', Path.DirectorySeparatorChar);
         var relativePath = "../api/event-get.md"
             .Replace('/', Path.DirectorySeparatorChar);
+        var relativePathWithAnchor = "../api/user-post-messages.md#request-2"
+            .Replace('/', Path.DirectorySeparatorChar);
 
         // Act
         var convertedFullPath = fullPath.ToTocRelativePath();
         var convertedRelativePath = relativePath.ToTocRelativePath();
+        var convertedRelativePathWithAnchor = relativePathWithAnchor.ToTocRelativePath();
 
         // Assert
         Assert.Equal("../../resources/event.md", convertedFullPath);
         Assert.Equal("../../api/event-get.md", convertedRelativePath);
+        Assert.Equal("../../api/user-post-messages.md#request-2", convertedRelativePathWithAnchor);
+    }
+
+    [Fact]
+    public void RelativeUrlPathsDoNotConvert()
+    {
+        // Arrange
+        var betaRelativeUrl = "/graph/extensibility-overview?context=graph%2Fapi%2Fbeta&preserve-view=true";
+        var v1RelativeUrl = "/graph/extensibility-overview?context=graph%2Fapi%2F1.0&preserve-view=true";
+
+        // Act
+        var convertedBetaPath = betaRelativeUrl.ToTocRelativePath();
+        var convertedV1Path = v1RelativeUrl.ToTocRelativePath();
+
+        // Assert
+        Assert.Equal(betaRelativeUrl, convertedBetaPath);
+        Assert.Equal(v1RelativeUrl, convertedV1Path);
     }
 
     public static TheoryData<string, string> CamelCaseData => new()

@@ -36,7 +36,6 @@ public class MethodLink(string title, string filePath, string? heading = null)
     public bool IsValid(string resourceDocumentFilePath)
     {
         // Is this a file path?
-
         var filePath = FilePath.NormalizeFilePath().TrimAnchor();
         var fileExtension = Path.GetExtension(filePath);
         if (string.IsNullOrEmpty(fileExtension))
