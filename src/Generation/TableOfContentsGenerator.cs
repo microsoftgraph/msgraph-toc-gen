@@ -298,7 +298,9 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
 
             _ = resourceDoc ?? throw new Exception("No matches found");
 
-            var resourceTocNodeName = resourceDoc.TocTitleOverride ?? resource.Name.SplitCamelCaseToSentenceCase();
+            var resourceTocNodeName = resourceDoc.TocTitleOverride ??
+                resourceDoc.ResourceName?.SplitCamelCaseToSentenceCase() ??
+                resource.Name.SplitCamelCaseToSentenceCase();
             var overview = resourceOverviews?.SingleOrDefault(o => o.Resource != null && o.Resource.IsEqualIgnoringCase(resource.Name));
 
             // If the resource has no methods and no overview,
