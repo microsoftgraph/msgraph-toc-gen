@@ -5,84 +5,85 @@ using System.CommandLine;
 using GenerateTOC.Generation;
 using GenerateTOC.Logging;
 
-var apiDocsOption = new Option<string>(["--api-docs", "-a"])
+var apiDocsOption = new Option<string>("--api-docs", "-a")
 {
     Description = "The path to a folder containing the API docs",
-    IsRequired = true,
+    Required = true,
 };
 
-var resourceDocsOption = new Option<string>(["--resource-docs", "-r"])
+var resourceDocsOption = new Option<string>("--resource-docs", "-r")
 {
     Description = "The path to a folder containing the resource docs",
-    IsRequired = true,
+    Required = true,
 };
 
-var mappingOption = new Option<string>(["--mapping", "-m"])
+var mappingOption = new Option<string>("--mapping", "-m")
 {
     Description = "The path to the workload mapping JSON file",
-    IsRequired = true,
+    Required = true,
 };
 
-var termsOverrideOption = new Option<string>(["--terms-override"])
+var termsOverrideOption = new Option<string>("--terms-override")
 {
     Description = "The path to the terms override JSON file",
-    IsRequired = false,
+    Required = false,
 };
 
-var tocOption = new Option<string>(["--toc", "-t"])
+var tocOption = new Option<string>("--toc", "-t")
 {
     Description = "The path where the generated TOC file should be saved",
-    IsRequired = true,
+    Required = true,
 };
 
-var staticTocOption = new Option<string>(["--static-toc", "-s"])
+var staticTocOption = new Option<string>("--static-toc", "-s")
 {
     Description = "The path to the static TOC file",
-    IsRequired = false,
+    Required = false,
 };
 
-var logOption = new Option<string>(["--log-file", "-l"])
+var logOption = new Option<string>("--log-file", "-l")
 {
     Description = "The path to save output logs",
-    IsRequired = false,
+    Required = false,
 };
 
-var versionOption = new Option<string>(["--api-version"])
+var versionOption = new Option<string>("--api-version")
 {
     Description = "The API version to generate TOC for",
-    IsRequired = false,
+    Required = false,
 };
 
-var rootCommand = new RootCommand();
-rootCommand.AddOption(apiDocsOption);
-rootCommand.AddOption(resourceDocsOption);
-rootCommand.AddOption(mappingOption);
-rootCommand.AddOption(termsOverrideOption);
-rootCommand.AddOption(tocOption);
-rootCommand.AddOption(staticTocOption);
-rootCommand.AddOption(logOption);
-rootCommand.AddOption(versionOption);
+var rootCommand = new RootCommand()
+{
+    apiDocsOption,
+    resourceDocsOption,
+    mappingOption,
+    termsOverrideOption,
+    tocOption,
+    staticTocOption,
+    logOption,
+    versionOption,
+};
 
-rootCommand.SetHandler(async (context) =>
+rootCommand.SetAction(async (result) =>
 {
     var generatorOptions = new GeneratorOptions
     {
-        ApiDocsFolder = context.ParseResult.GetValueForOption(apiDocsOption) ??
+        ApiDocsFolder = result.GetValue(apiDocsOption) ??
             throw new ArgumentException("The --api-docs option is required."),
-        ResourceDocsFolder = context.ParseResult.GetValueForOption(resourceDocsOption) ??
+        ResourceDocsFolder = result.GetValue(resourceDocsOption) ??
             throw new ArgumentException("The --resource-docs option is required."),
-        MappingFile = context.ParseResult.GetValueForOption(mappingOption) ??
+        MappingFile = result.GetValue(mappingOption) ??
             throw new ArgumentException("The --mapping option is required."),
-        TermsOverrideFile = context.ParseResult.GetValueForOption(termsOverrideOption),
-        TocFile = context.ParseResult.GetValueForOption(tocOption) ??
+        TermsOverrideFile = result.GetValue(termsOverrideOption),
+        TocFile = result.GetValue(tocOption) ??
             throw new ArgumentException("The --toc option is required."),
-        StaticTocFile = context.ParseResult.GetValueForOption(staticTocOption),
-        Version = context.ParseResult.GetValueForOption(versionOption),
+        StaticTocFile = result.GetValue(staticTocOption),
+        Version = result.GetValue(versionOption),
     };
     generatorOptions.NormalizeFilePaths();
 
-    var logFile = context.ParseResult.GetValueForOption(logOption);
-
+    var logFile = result.GetValue(logOption);
     var logger = OutputLoggerFactory.GetLogger<Program>(logFile);
 
     var generator = new TableOfContentsGenerator(generatorOptions, logger);
@@ -90,4 +91,4 @@ rootCommand.SetHandler(async (context) =>
     await generator.GenerateTocAsync();
 });
 
-Environment.Exit(await rootCommand.InvokeAsync(args));
+Environment.Exit(await rootCommand.Parse(args).InvokeAsync());

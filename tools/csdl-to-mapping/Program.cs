@@ -12,28 +12,31 @@ var jsonOptions = new JsonSerializerOptions
     WriteIndented = true,
 };
 
-var csdlOption = new Option<FileInfo?>(
-    aliases: ["--csdl", "-c"],
-    description: "The path to the CSDL file to generate a mapping from",
-    parseArgument: result =>
+var csdlOption = new Option<FileInfo?>("--csdl", "-c")
+{
+    Description = "The path to the CSDL file to generate a mapping from",
+    Required = true,
+    CustomParser = result =>
     {
         var filePath = result.Tokens.Single().Value;
         if (!File.Exists(filePath))
         {
-            result.ErrorMessage = $"{filePath} does not exist";
+            result.AddError($"{filePath} does not exist");
             return null;
         }
 
         return new FileInfo(filePath);
-    })
-    { IsRequired = true };
+    },
+};
 
-var rootCommand = new RootCommand();
-rootCommand.AddOption(csdlOption);
-
-rootCommand.SetHandler(async (context) =>
+var rootCommand = new RootCommand()
 {
-    var csdlFile = context.ParseResult.GetValueForOption(csdlOption) ??
+    csdlOption,
+};
+
+rootCommand.SetAction(async (result) =>
+{
+    var csdlFile = result.GetValue(csdlOption) ??
         throw new ArgumentException("The --csdl option is required.");
 
     var csdl = XDocument.Load(csdlFile.FullName);
@@ -71,4 +74,4 @@ rootCommand.SetHandler(async (context) =>
     }
 });
 
-Environment.Exit(await rootCommand.InvokeAsync(args));
+Environment.Exit(await rootCommand.Parse(args).InvokeAsync());

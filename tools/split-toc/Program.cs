@@ -7,43 +7,48 @@ using GenerateTOC.Generation;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-var tocOption = new Option<FileInfo?>(
-    aliases: ["--toc", "-t"],
-    description: "The path to the toc.yml to split",
-    parseArgument: result =>
+var tocOption = new Option<FileInfo?>("--toc", "-t")
+{
+    Description = "The path to the toc.yml to split",
+    Required = true,
+    CustomParser = result =>
     {
         var filePath = result.Tokens.Single().Value;
         if (!File.Exists(filePath))
         {
-            result.ErrorMessage = $"{filePath} does not exist";
+            result.AddError($"{filePath} does not exist");
             return null;
         }
         return new FileInfo(filePath);
-    })
-    { IsRequired = true };
+    }
+};
 
-var outDirectoryOption = new Option<DirectoryInfo>(
-    aliases: ["--out", "-o"],
-    description: "The path to the directory where the split files should be saved")
-    { IsRequired = true };
-
-var updateOriginalOption = new Option<bool>(
-    aliases: ["--update", "-u"],
-    description: "Update the original TOC file with relative links to split files"
-);
-
-var rootCommand = new RootCommand();
-rootCommand.AddOption(tocOption);
-rootCommand.AddOption(outDirectoryOption);
-rootCommand.AddOption(updateOriginalOption);
-
-rootCommand.SetHandler(async (context) =>
+var outDirectoryOption = new Option<DirectoryInfo>("--out", "-o")
 {
-    var tocFile = context.ParseResult.GetValueForOption(tocOption) ??
+    Description = "The path to the directory where the split files should be saved",
+    Required = true,
+};
+
+var updateOriginalOption = new Option<bool>("--update", "-u")
+{
+    Description = "Update the original TOC file with relative links to split files",
+    Required = false,
+};
+
+var rootCommand = new RootCommand()
+{
+    tocOption,
+    outDirectoryOption,
+    updateOriginalOption,
+};
+
+rootCommand.SetAction(async (result) =>
+{
+    var tocFile = result.GetValue(tocOption) ??
         throw new ArgumentException("The --toc option is required.");
-    var outDirectory = context.ParseResult.GetValueForOption(outDirectoryOption) ??
+    var outDirectory = result.GetValue(outDirectoryOption) ??
         throw new ArgumentException("The --out option is required.");
-    var updateOriginal = context.ParseResult.GetValueForOption(updateOriginalOption);
+    var updateOriginal = result.GetValue(updateOriginalOption);
 
     var tocYaml = await File.ReadAllTextAsync(tocFile.FullName);
     var tocDeserializer = new DeserializerBuilder()
@@ -53,20 +58,17 @@ rootCommand.SetHandler(async (context) =>
     var originalToc = tocDeserializer.Deserialize<YamlToc>(tocYaml);
 
     // Find the API reference node
-    var apiReferenceRegex = new Regex("^API\\s.*[Rr]eference$");
-    var referenceNodes = originalToc.Items.Where(i => apiReferenceRegex.IsMatch(i.Name ?? string.Empty));
+    var referenceNodes = originalToc.Items.Where(i => ApiReferenceRegex().IsMatch(i.Name ?? string.Empty));
     if (referenceNodes == null || !referenceNodes.Any())
     {
         Console.WriteLine("No API reference node detected in provided TOC file");
-        context.ExitCode = 1;
-        return;
+        return 1;
     }
 
     if (referenceNodes.Count() > 1)
     {
         Console.WriteLine("More than one API reference node detected in provided TOC file");
-        context.ExitCode = 1;
-        return;
+        return 1;
     }
 
     var referenceNode = referenceNodes.First();
@@ -77,8 +79,7 @@ rootCommand.SetHandler(async (context) =>
         if (workloadNodes == null || !workloadNodes.Any())
         {
             Console.WriteLine("No child nodes found under API reference node");
-            context.ExitCode = 1;
-            return;
+            return 1;
         }
 
         // Empty out directory
@@ -133,6 +134,13 @@ rootCommand.SetHandler(async (context) =>
             Console.WriteLine($"Updated {tocFile.FullName}");
         }
     }
+    return 0;
 });
 
-Environment.Exit(await rootCommand.InvokeAsync(args));
+Environment.Exit(await rootCommand.Parse(args).InvokeAsync());
+
+partial class Program
+{
+    [GeneratedRegex("^API\\s.*[Rr]eference$")]
+    private static partial Regex ApiReferenceRegex();
+}
