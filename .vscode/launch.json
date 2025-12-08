@@ -10,7 +10,7 @@
       "request": "launch",
       "preLaunchTask": "build",
       // If you have changed target frameworks, make sure to update the program path.
-      "program": "${workspaceFolder}/src/bin/Debug/net8.0/GenerateTOC.dll",
+      "program": "${workspaceFolder}/src/bin/Debug/net10.0/GenerateTOC.dll",
       "args": [
         "--api-docs",
         "C:/Source/Repos/microsoft-graph-docs/api-reference/v1.0/api",
@@ -42,7 +42,7 @@
       "request": "launch",
       "preLaunchTask": "build",
       // If you have changed target frameworks, make sure to update the program path.
-      "program": "${workspaceFolder}/src/bin/Debug/net8.0/GenerateTOC.dll",
+      "program": "${workspaceFolder}/src/bin/Debug/net10.0/GenerateTOC.dll",
       "args": [
         "--api-docs",
         "C:/Source/Repos/microsoft-graph-docs/api-reference/beta/api",
@@ -76,7 +76,7 @@
       "request": "launch",
       "preLaunchTask": "build",
       // If you have changed target frameworks, make sure to update the program path.
-      "program": "${workspaceFolder}/tools/split-toc/bin/Debug/net8.0/SplitTOC.dll",
+      "program": "${workspaceFolder}/tools/split-toc/bin/Debug/net10.0/SplitTOC.dll",
       "args": [
         "--toc",
         "C:/Source/Repos/microsoft-graph-docs/api-reference/beta/toc.yml",
@@ -99,7 +99,7 @@
       "request": "launch",
       "preLaunchTask": "build",
       // If you have changed target frameworks, make sure to update the program path.
-      "program": "${workspaceFolder}/tools/toc-scan/bin/Debug/net8.0/TOCScan.dll",
+      "program": "${workspaceFolder}/tools/toc-scan/bin/Debug/net10.0/TOCScan.dll",
       "args": [
         "--api-docs",
         "C:/Source/Repos/microsoft-graph-docs/api-reference/v1.0/api",
@@ -123,7 +123,7 @@
       "request": "launch",
       "preLaunchTask": "build",
       // If you have changed target frameworks, make sure to update the program path.
-      "program": "${workspaceFolder}/tools/csdl-to-mapping/bin/Debug/net8.0/CSDL2Mapping.dll",
+      "program": "${workspaceFolder}/tools/csdl-to-mapping/bin/Debug/net10.0/CSDL2Mapping.dll",
       "args": [
         "--csdl",
         "C:/Source/Repos/graph-workloads/Workloads/Microsoft.Intune.Updates/override/schema-Prod-beta.csdl"

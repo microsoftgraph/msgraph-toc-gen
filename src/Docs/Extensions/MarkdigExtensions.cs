@@ -59,8 +59,11 @@ public static class MarkdigExtensions
 
         foreach (var headerCell in headerCells)
         {
-            var text = headerCell.Descendants<LiteralInline>().First();
-            headings.Add(text.TextValue());
+            var text = headerCell.Descendants<LiteralInline>().FirstOrDefault()?.TextValue();
+            if (!string.IsNullOrEmpty(text))
+            {
+                headings.Add(text);
+            }
         }
 
         return headings;
