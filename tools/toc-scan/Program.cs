@@ -2,40 +2,41 @@
 // Licensed under the MIT license.
 
 using System.CommandLine;
-using System.Net.Mime;
 using System.Text.RegularExpressions;
 using TOCScan;
 
-var apiDocsOption = new Option<string>(["--api-docs", "-a"])
+var apiDocsOption = new Option<string>("--api-docs", "-a")
 {
     Description = "The path to a folder containing the API docs",
-    IsRequired = true,
+    Required = true,
 };
 
-var resourceDocsOption = new Option<string>(["--resource-docs", "-r"])
+var resourceDocsOption = new Option<string>("--resource-docs", "-r")
 {
     Description = "The path to a folder containing the resource docs",
-    IsRequired = true,
+    Required = true,
 };
 
-var tocOption = new Option<string>(["--toc", "-t"])
+var tocOption = new Option<string>("--toc", "-t")
 {
     Description = "The path to a folder containing the TOC files",
-    IsRequired = true,
+    Required = true,
 };
 
-var rootCommand = new RootCommand();
-rootCommand.AddOption(apiDocsOption);
-rootCommand.AddOption(resourceDocsOption);
-rootCommand.AddOption(tocOption);
-
-rootCommand.SetHandler(async (context) =>
+var rootCommand = new RootCommand()
 {
-    var apiDocsFolder = context.ParseResult.GetValueForOption(apiDocsOption) ??
+    apiDocsOption,
+    resourceDocsOption,
+    tocOption,
+};
+
+rootCommand.SetAction(async (result) =>
+{
+    var apiDocsFolder = result.GetValue(apiDocsOption) ??
         throw new ArgumentException("The --api-docs option is required.");
-    var resourceDocsFolder = context.ParseResult.GetValueForOption(resourceDocsOption) ??
+    var resourceDocsFolder = result.GetValue(resourceDocsOption) ??
         throw new ArgumentException("The --resource-docs option is required.");
-    var tocFolder = context.ParseResult.GetValueForOption(tocOption) ??
+    var tocFolder = result.GetValue(tocOption) ??
         throw new ArgumentException("The --toc option is required.");
 
     // Get list of API docs
@@ -69,8 +70,8 @@ rootCommand.SetHandler(async (context) =>
     }
 
     // Eliminate duplicates
-    resourcesInTOC = resourcesInTOC.Distinct().ToList();
-    apisInTOC = apisInTOC.Distinct().ToList();
+    resourcesInTOC = [.. resourcesInTOC.Distinct()];
+    apisInTOC = [.. apisInTOC.Distinct()];
 
     // Find docs not in TOC
     var resourcesNotInTOC = resourceFiles.Select(f => Path.GetFileName(f)).Where(f => !resourcesInTOC.Contains(f)).ToList();
@@ -83,4 +84,4 @@ rootCommand.SetHandler(async (context) =>
     await File.AppendAllLinesAsync("files.txt", apisNotInTOC);
 });
 
-Environment.Exit(await rootCommand.InvokeAsync(args));
+Environment.Exit(await rootCommand.Parse(args).InvokeAsync());
