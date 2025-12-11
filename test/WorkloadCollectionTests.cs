@@ -7,10 +7,16 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace GenerateTOCTests;
 
+/// <summary>
+/// Tests for the WorkloadCollection class.
+/// </summary>
 public class WorkloadCollectionTests
 {
     private readonly ILogger logger = new NullLoggerFactory().CreateLogger("test");
 
+    /// <summary>
+    /// Tests that a workload is generated correctly from a folder.
+    /// </summary>
     [Fact]
     public void WorkloadGeneratesCorrectly()
     {
