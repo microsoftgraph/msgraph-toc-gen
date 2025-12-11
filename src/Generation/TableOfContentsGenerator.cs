@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+/* cSpell:ignore Intune */
+
 using System.Text.Json;
 using GenerateTOC.Docs;
 using GenerateTOC.Extensions;
@@ -388,7 +390,8 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
                 GenerationEventId.InvalidMappingFile,
                 "Invalid mapping file {file}. File was not found.",
                 Options.MappingFile);
-            return null;
+
+            throw new MappingFileException($"Invalid mapping file {Options.MappingFile}. File was not found.");
         }
 
         try
@@ -402,7 +405,7 @@ public class TableOfContentsGenerator(GeneratorOptions options, ILogger logger)
                 GenerationEventId.InvalidMappingFile,
                 "Error loading mapping file: {msg}",
                 ex.Message);
-            return null;
+            throw new MappingFileException($"Error loading mapping file: {ex.Message}");
         }
     }
 
