@@ -5,8 +5,14 @@ using GenerateTOC.Extensions;
 
 namespace GenerateTOCTests;
 
+/// <summary>
+/// Tests for the XmlExtensions class.
+/// </summary>
 public class XmlExtensionsTests
 {
+    /// <summary>
+    /// Tests that getting descendants from an XDocument succeeds.
+    /// </summary>
     [Fact]
     public void GetDescendantsSucceeds()
     {
@@ -21,6 +27,9 @@ public class XmlExtensionsTests
         Assert.Equal(2, descendants.Count());
     }
 
+    /// <summary>
+    /// Tests that getting elements from an XElement succeeds.
+    /// </summary>
     [Fact]
     public void GetElementsSucceeds()
     {
@@ -35,6 +44,9 @@ public class XmlExtensionsTests
         Assert.Equal(2, elements.Count());
     }
 
+    /// <summary>
+    /// Tests that getting an attribute from an XElement succeeds.
+    /// </summary>
     [Fact]
     public void GetAttributeSucceeds()
     {

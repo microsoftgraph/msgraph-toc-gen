@@ -5,8 +5,14 @@ using GenerateTOC.CSDL;
 
 namespace GenerateTOCTests;
 
+/// <summary>
+/// Tests for the Resource class.
+/// </summary>
 public class ResourceTests
 {
+    /// <summary>
+    /// Tests that a resource is generated correctly for an entity without a base type.
+    /// </summary>
     [Fact]
     public void ResourceGeneratesForEntityWithoutBaseType()
     {
@@ -26,6 +32,9 @@ public class ResourceTests
         Assert.Null(resource.BaseType);
     }
 
+    /// <summary>
+    /// Tests that a resource is generated correctly for a hidden entity.
+    /// </summary>
     [Fact]
     public void ResourceGeneratesForHiddenEntity()
     {
@@ -42,6 +51,9 @@ public class ResourceTests
         Assert.True(resource.IsHidden);
     }
 
+    /// <summary>
+    /// Tests that a resource is generated correctly for an entity with a base type.
+    /// </summary>
     [Fact]
     public void ResourceGeneratesForEntityWithBaseType()
     {

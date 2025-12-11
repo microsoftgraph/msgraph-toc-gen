@@ -19,8 +19,9 @@ var tocOption = new Option<FileInfo?>("--toc", "-t")
             result.AddError($"{filePath} does not exist");
             return null;
         }
+
         return new FileInfo(filePath);
-    }
+    },
 };
 
 var outDirectoryOption = new Option<DirectoryInfo>("--out", "-o")
@@ -134,12 +135,16 @@ rootCommand.SetAction(async (result) =>
             Console.WriteLine($"Updated {tocFile.FullName}");
         }
     }
+
     return 0;
 });
 
 Environment.Exit(await rootCommand.Parse(args).InvokeAsync());
 
-partial class Program
+/// <summary>
+/// Partial Program class to hold generated regex methods.
+/// </summary>
+internal partial class Program
 {
     [GeneratedRegex("^API\\s.*[Rr]eference$")]
     private static partial Regex ApiReferenceRegex();
