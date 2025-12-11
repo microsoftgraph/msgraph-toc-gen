@@ -88,7 +88,14 @@ rootCommand.SetAction(async (result) =>
 
     var generator = new TableOfContentsGenerator(generatorOptions, logger);
 
-    await generator.GenerateTocAsync();
+    try
+    {
+        await generator.GenerateTocAsync();
+    }
+    catch (MappingFileException ex)
+    {
+        throw new ApplicationException(ex.Message);
+    }
 });
 
 Environment.Exit(await rootCommand.Parse(args).InvokeAsync());
